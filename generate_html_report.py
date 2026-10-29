@@ -406,6 +406,40 @@ def generate_html_report():
     </table>
 
     <h2>5. METHODOLOGY & IMPLEMENTATION</h2>
+
+    <h3>5.1 System & Design Approach</h3>
+    <p>The development of the Restaurant Management System (RMS) adopts a structured engineering methodology combining a <strong>Top-Down Database Life Cycle</strong>, an industry-standard <strong>3-Tier Layered Architecture</strong>, and an <strong>Active Database Management Paradigm</strong>:</p>
+    
+    <ol>
+        <li><strong>Top-Down Database Design Methodology:</strong>
+            <ul>
+                <li><em>Requirement Analysis:</em> Identified and categorized core functional restaurant entities: restaurant branches, role-based staff, suppliers, raw material inventories, menu items, customer accounts, orders, line-item billings, financial ledgers, and customer ratings.</li>
+                <li><em>Conceptual Schema Modeling (ER Model):</em> Formulated an Entity-Relationship model following Chen’s notation to define entity boundaries, composite/multivalued attributes, and relationship cardinalities (1:1, 1:N, and M:N).</li>
+                <li><em>Logical Schema Mapping:</em> Converted ER abstractions into relational tables, resolving M:N associations into dedicated junction tables (<code>Order_Item</code>, <code>Employee_Vendor</code>, <code>Employee_Service</code>, <code>Finance_Service</code>) with composite primary keys.</li>
+                <li><em>Schema Normalization (3NF):</em> Systematically decomposed tables up to Third Normal Form (3NF). Eliminated repeating groups and multivalued attributes by isolating customer emails into a dedicated <code>Customer_Email</code> table (1NF), removed partial dependencies from composite keys (2NF), and resolved transitive dependencies so all non-key fields functionally depend strictly on primary keys (3NF), thereby preventing update, insertion, and deletion anomalies.</li>
+            </ul>
+        </li>
+        <li><strong>3-Tier Architectural Approach:</strong>
+            <ul>
+                <li><em>Presentation Tier (Frontend):</em> Implemented using Streamlit 1.65.0, providing a responsive, intuitive web dashboard spanning 10 specialized operational modules and an interactive SQL Laboratory.</li>
+                <li><em>Application / Logic Tier (Middleware):</em> Built with Python 3.13 to handle business rules, session persistence, connection pooling, and secure parameterized queries via <code>mysql-connector-python</code>.</li>
+                <li><em>Data Tier (Storage & Integrity):</em> Hosted on MySQL 8.0 with the ACID-compliant InnoDB storage engine, ensuring transactional atomicity, persistence, constraints, triggers, and views.</li>
+            </ul>
+        </li>
+        <li><strong>Active Database & Server-Side Integrity Approach:</strong>
+            <ul>
+                <li><em>Automated Calculations via PL/SQL Triggers:</em> Implemented <code>AFTER INSERT</code>, <code>AFTER UPDATE</code>, and <code>AFTER DELETE</code> triggers on <code>Order_Item</code> to compute item subtotals, apply 5% taxes, and update order grand totals inside the database kernel rather than relying solely on client code.</li>
+                <li><em>Analytical Views:</em> Encapsulated reporting queries into reusable views (<code>v_low_stock</code> for threshold-based ingredient reorder alerts and <code>v_monthly_profit</code> for net income statements).</li>
+                <li><em>Declarative Constraints:</em> Enforced referential integrity via Foreign Keys with <code>ON DELETE RESTRICT</code> (protecting transaction histories) and <code>ON DELETE CASCADE</code> (purging orphan line items), combined with <code>CHECK</code> constraints (validating feedback scores).</li>
+            </ul>
+        </li>
+        <li><strong>Modular & Fault-Tolerant Software Engineering:</strong>
+            <ul>
+                <li>Implemented modular component boundaries with defensive fallback shims to ensure smooth operation across varied system environments.</li>
+            </ul>
+        </li>
+    </ol>
+
     <h3>Table 3: Tools & Technologies Used</h3>
     <table>
         <tr><th>Layer</th><th>Tool / Technology</th><th>Purpose</th></tr>

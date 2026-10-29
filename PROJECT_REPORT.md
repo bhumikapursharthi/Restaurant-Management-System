@@ -116,6 +116,28 @@ To design and implement a database-driven Restaurant Management System that stor
 
 ## 5. METHODOLOGY & IMPLEMENTATION
 
+### 5.1 System & Design Approach
+The development of the Restaurant Management System (RMS) adopts a structured engineering methodology combining a **Top-Down Database Life Cycle**, an industry-standard **3-Tier Layered Architecture**, and an **Active Database Management Paradigm**:
+
+1. **Top-Down Database Design Methodology:**
+   - **Requirement Analysis:** Identified and categorized core functional restaurant entities: restaurant branches, role-based staff, suppliers, raw material inventories, menu items, customer accounts, orders, line-item billings, financial ledgers, and customer ratings.
+   - **Conceptual Schema Modeling (ER Model):** Created an Entity-Relationship model following Chen’s notation to define entity boundaries, composite/multivalued attributes, and relationship cardinalities ($1:1$, $1:N$, and $M:N$).
+   - **Logical Schema Mapping:** Converted ER abstractions into relational tables, resolving $M:N$ associations into dedicated junction tables (`Order_Item`, `Employee_Vendor`, `Employee_Service`, `Finance_Service`) with composite primary keys.
+   - **Schema Normalization (3NF):** Systematically decomposed tables up to Third Normal Form (3NF). Eliminated repeating groups and multivalued attributes by isolating customer emails into a `Customer_Email` table (1NF), removed partial dependencies from composite keys (2NF), and resolved transitive dependencies so all non-key fields functionally depend strictly on primary keys (3NF), thereby preventing update, insertion, and deletion anomalies.
+
+2. **3-Tier Architectural Approach:**
+   - **Presentation Tier (Frontend):** Implemented using Streamlit 1.65.0, providing a responsive, intuitive web dashboard spanning 10 specialized operational modules and an interactive SQL Laboratory.
+   - **Application / Logic Tier (Middleware):** Built with Python 3.13 to handle business rules, session persistence, connection pooling, and secure parameterized queries via `mysql-connector-python`.
+   - **Data Tier (Storage & Integrity):** Hosted on MySQL 8.0 with the ACID-compliant InnoDB storage engine, ensuring transactional atomicity, persistence, constraints, triggers, and views.
+
+3. **Active Database & Server-Side Integrity Approach:**
+   - **Automated Calculations via PL/SQL Triggers:** Implemented `AFTER INSERT`, `AFTER UPDATE`, and `AFTER DELETE` triggers on `Order_Item` to compute item subtotals, apply $5\%$ taxes, and update order grand totals inside the database kernel rather than relying solely on client code.
+   - **Analytical Views:** Encapsulated reporting queries into reusable views (`v_low_stock` for threshold-based ingredient reorder alerts and `v_monthly_profit` for net income statements).
+   - **Declarative Constraints:** Enforced referential integrity via Foreign Keys with `ON DELETE RESTRICT` (protecting transaction histories) and `ON DELETE CASCADE` (purging orphan line items), combined with `CHECK` constraints (validating feedback scores).
+
+4. **Modular & Fault-Tolerant Software Engineering:**
+   - Implemented modular component boundaries with defensive fallback shims to ensure smooth operation across varied system environments.
+
 ### Table 3: Tools & Technologies Used
 | Layer | Tool / Technology | Purpose |
 |---|---|---|
